@@ -1,0 +1,6 @@
+flask
+sqlalchemy
+attrs
+psycopg2
+pytest
+pytest-sqlalchemy
