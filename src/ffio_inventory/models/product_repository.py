@@ -1,6 +1,5 @@
 import attrs
 from sqlalchemy import select, insert, update, delete
-from sqlalchemy.engine import LegacyRow
 from sqlalchemy.future import Connection
 from sqlalchemy.util.compat import contextmanager
 
