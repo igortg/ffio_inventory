@@ -1,7 +1,9 @@
+-e file:./
+attrs
 flask
 flask-restx
-sqlalchemy
-attrs
+gunicorn
 psycopg2
 pytest
 pytest-sqlalchemy
+sqlalchemy

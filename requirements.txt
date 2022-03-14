@@ -4,6 +4,8 @@
 #
 #    pip-compile
 #
+-e file:./
+    # via -r requirements.in
 aniso8601==9.0.1
     # via flask-restx
 atomicwrites==1.4.0
@@ -27,6 +29,8 @@ flask-restx==0.5.1
     # via -r requirements.in
 greenlet==1.1.2
     # via sqlalchemy
+gunicorn==20.1.0
+    # via -r requirements.in
 iniconfig==1.1.1
     # via pytest
 itsdangerous==2.1.0
@@ -74,3 +78,6 @@ werkzeug==2.0.3
     # via
     #   flask
     #   flask-restx
+
+# The following packages are considered to be unsafe in a requirements file:
+# setuptools

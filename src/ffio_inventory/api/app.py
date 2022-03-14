@@ -1,9 +1,12 @@
+import logging
 from flask import Flask, g
 
 from ffio_inventory.api.product import ns as product_ns
 from flask_restx import Api
 
 from ffio_inventory.models import db
+
+log = logging.getLogger(__name__)
 
 
 def create_app(db_url: str) -> Flask:
@@ -15,6 +18,7 @@ def create_app(db_url: str) -> Flask:
 
     api.init_app(app)
 
+    log.info(f"Setting database to: {db_url}")
     db.init_db(db_url)
 
     @app.teardown_appcontext

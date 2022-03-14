@@ -1,0 +1,1 @@
+web: gunicorn --bind $HOST:$PORT ffio_inventory.api.__main__:app
