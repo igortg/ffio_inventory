@@ -33,7 +33,7 @@ def create_tables(engine: Engine):
     Note: can be optimized later on by using nested transactions to avoid creating/dropping
     the entire database on each test.
     """
-    from ffio_inventory.models.schema import metadata
+    from ffio_inventory.repository.schema import metadata
 
     metadata.create_all(bind=engine)
     yield

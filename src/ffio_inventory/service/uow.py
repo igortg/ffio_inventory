@@ -1,6 +1,6 @@
 from sqlalchemy.engine import Engine, Connection, Transaction
 
-from ffio_inventory.models.product_repository import ProductRepository
+from ffio_inventory.repository.product_repository import ProductRepository
 
 
 class UnitOfWork:

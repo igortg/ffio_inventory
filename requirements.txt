@@ -6,6 +6,8 @@
 #
 -e file:./
     # via -r requirements.in
+amqp==5.1.0
+    # via kombu
 aniso8601==9.0.1
     # via flask-restx
 atomicwrites==1.4.0
@@ -15,12 +17,25 @@ attrs==21.4.0
     #   -r requirements.in
     #   jsonschema
     #   pytest
-click==8.0.4
-    # via flask
-colorama==0.4.4
+billiard==3.6.4.0
+    # via celery
+celery==5.1.2
+    # via -r requirements.in
+click==7.1.2
     # via
-    #   click
-    #   pytest
+    #   celery
+    #   click-didyoumean
+    #   click-plugins
+    #   click-repl
+    #   flask
+click-didyoumean==0.3.0
+    # via celery
+click-plugins==1.1.1
+    # via celery
+click-repl==0.2.0
+    # via celery
+colorama==0.4.4
+    # via pytest
 flask==2.0.3
     # via
     #   -r requirements.in
@@ -39,12 +54,16 @@ jinja2==3.0.3
     # via flask
 jsonschema==4.4.0
     # via flask-restx
+kombu==5.2.4
+    # via celery
 markupsafe==2.1.0
     # via jinja2
 packaging==21.3
     # via pytest
 pluggy==1.0.0
     # via pytest
+prompt-toolkit==3.0.28
+    # via click-repl
 psycopg2==2.9.3
     # via -r requirements.in
 py==1.11.0
@@ -60,9 +79,12 @@ pytest==7.0.1
 pytest-sqlalchemy==0.2.1
     # via -r requirements.in
 pytz==2021.3
-    # via flask-restx
+    # via
+    #   celery
+    #   flask-restx
 six==1.16.0
     # via
+    #   click-repl
     #   flask-restx
     #   sqlalchemy-utils
 sqlalchemy==1.4.32
@@ -74,6 +96,13 @@ sqlalchemy-utils==0.38.2
     # via pytest-sqlalchemy
 tomli==2.0.1
     # via pytest
+vine==5.0.0
+    # via
+    #   amqp
+    #   celery
+    #   kombu
+wcwidth==0.2.5
+    # via prompt-toolkit
 werkzeug==2.0.3
     # via
     #   flask

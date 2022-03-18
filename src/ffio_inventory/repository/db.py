@@ -1,7 +1,7 @@
 from sqlalchemy import create_engine
 from sqlalchemy.engine import Engine
 
-from ffio_inventory.models.schema import metadata
+from ffio_inventory.repository.schema import metadata
 
 engine: Engine | None = None
 
@@ -9,7 +9,7 @@ engine: Engine | None = None
 def init_db(db_url: str):
     global engine
     db_url = _fix_herokup_db_url(db_url)
-    engine = create_engine(db_url, connect_args={'sslmode': 'require'})
+    engine = create_engine(db_url, executemany_mode='batch', executemany_batch_page_size=2_000)
     metadata.create_all(bind=engine)
 
 

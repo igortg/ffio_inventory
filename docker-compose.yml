@@ -1,13 +1,18 @@
 services:
 
   db:
-    image: postgres:13.4
+    image: postgres:13.6
     ports:
       - 5432:5432
     environment:
       POSTGRES_PASSWORD: masterkey
     volumes:
       - pgdata:/var/lib/postgresql/data
+
+  broker:
+    image: redis:6.2.6
+    ports:
+      - 6379:6379
 
 volumes:
   pgdata:

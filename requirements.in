@@ -1,9 +1,12 @@
 -e file:./
 attrs
+celery==5.1.2
 flask
 flask-restx
 gunicorn
 psycopg2
 pytest
 pytest-sqlalchemy
+pytest-datadir
+pytest-regressions
 sqlalchemy
