@@ -28,7 +28,6 @@ class ProductRepository(BaseRepository):
                 )
             )
             return attrs.evolve(product, id=res.inserted_primary_key[0])
-        return res.rowcount
 
     def add_multiples(self, product_list: list[Product]) -> None:
         """
@@ -48,14 +47,14 @@ class ProductRepository(BaseRepository):
             {product_table.c.description.name} = :description
         """
         )
-
         rows = [{'sku': p.sku, 'name': p.name, 'description': p.description} for p in product_list]
         with self.open_transaction() as connection:
-            res = connection.execute(s, rows)
+            connection.execute(s, rows)
 
-    def update(self, product: Product) -> Product:
+    def update(self, product: Product) -> None:
         with self.open_transaction() as connection:
-            res = connection.execute(
+            # noinspection PyProtectedMember
+            connection.execute(
                 update(product_table)
                 .where(product_table.c.id == product._id)
                 .values(
@@ -80,4 +79,4 @@ class ProductRepository(BaseRepository):
 
     def remove(self, product_id: int) -> None:
         with self.open_transaction() as connection:
-            res = connection.execute(delete(product_table).where(product_table.c.id == product_id))
+            connection.execute(delete(product_table).where(product_table.c.id == product_id))

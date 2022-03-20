@@ -22,6 +22,3 @@ RUN chown ffio $UPLOAD_FOLDER
 USER ffio
 
 COPY --chown=ffio src/ .
-
-# CMD ["gunicorn", "ffio_inventory.api.__main__:app", "-b", "0.0.0.0:5000"]
-# CMD ["python", "-m", "ffio_inventory.api"]

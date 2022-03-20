@@ -10,7 +10,7 @@ services:
       FLASK_APP: ffio_inventory.api.__main__:app
     volumes:
       - uploads_folder:/mnt/ffio_uploads
-    command: 'flask run --host=0.0.0.0'
+    command: 'gunicorn ffio_inventory.api.__main__:app -b 0.0.0.0:5000'
 
   worker:
     image: ffio_inventory

@@ -29,6 +29,10 @@ def load_products_from_csv(
 ) -> None:
     """
     Load products from a CSV file with 3 columns: name,sku,description
+
+    To make a good balancing between memory usage and performance,
+    the list of products are dumped from the memory to the database
+    at each 100K lines.
     """
     with uow:
         products = []

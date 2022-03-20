@@ -13,13 +13,22 @@ from ffio_inventory.worker.app import celery_app
 log = logging.getLogger(__name__)
 
 
-def start_load_products_from_csv(request_file: Path) -> AsyncResult:
-    uploaded_file = request_file.relative_to(UPLOAD_PATH)
+def start_load_products_from_csv(csv_filepath: Path) -> AsyncResult:
+    """
+    Start to process the given CSV file with a list of products in an
+    asynchronous fashion and returns the Task ID.
+    """
+    uploaded_file = csv_filepath.relative_to(UPLOAD_PATH)
     async_result = _load_products_from_csv_task.delay(uploaded_file)
     return async_result
 
 
 def get_load_products_from_csv_task_progress(task_id: str) -> tuple[str, dict]:
+    """
+    Query the state and progress on the given Celery `task_id`.
+
+    :return: Task state and a dict with the "current" and "total" keywords.
+    """
     from celery.states import STARTED
 
     async_result = celery_app.AsyncResult(task_id)
