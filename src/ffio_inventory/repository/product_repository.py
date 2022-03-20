@@ -1,8 +1,5 @@
-from typing import Any
-
 import attrs
 from sqlalchemy import select, insert, update, delete, text
-from sqlalchemy.exc import IntegrityError
 from sqlalchemy.future import Connection
 from sqlalchemy.util.compat import contextmanager
 
@@ -31,15 +28,6 @@ class ProductRepository(BaseRepository):
                 )
             )
             return attrs.evolve(product, id=res.inserted_primary_key[0])
-
-    def add_multiples(self, product_list: list[Product]) -> int:
-        # TODO: Deduplicate with Postgres "ON CONFLICT"
-        rows = {
-            p.sku: {'sku': p.sku, 'name': p.name, 'description': p.description}
-            for p in product_list
-        }
-        with self.open_transaction() as connection:
-            res = connection.execute(insert(product_table).values(list(rows.values())))
         return res.rowcount
 
     def add_multiples(self, product_list: list[Product]) -> None:
@@ -85,9 +73,9 @@ class ProductRepository(BaseRepository):
             raise KeyError(f"Product ID {product_id} not found")
         return Product(**row)
 
-    def load_all(self) -> list[Product]:
+    def load_all(self, *, limit: int = 50) -> list[Product]:
         with self.open_transaction() as connection:
-            res = connection.execute(select(product_table))
+            res = connection.execute(select(product_table).limit(limit))
         return [Product(**row) for row in res.fetchall()]
 
     def remove(self, product_id: int) -> None:

@@ -36,6 +36,8 @@ click-repl==0.2.0
     # via celery
 colorama==0.4.4
     # via pytest
+deprecated==1.2.13
+    # via redis
 flask==2.0.3
     # via
     #   -r requirements.in
@@ -59,7 +61,9 @@ kombu==5.2.4
 markupsafe==2.1.0
     # via jinja2
 packaging==21.3
-    # via pytest
+    # via
+    #   pytest
+    #   redis
 pluggy==1.0.0
     # via pytest
 prompt-toolkit==3.0.28
@@ -75,13 +79,25 @@ pyrsistent==0.18.1
 pytest==7.0.1
     # via
     #   -r requirements.in
+    #   pytest-datadir
+    #   pytest-regressions
     #   pytest-sqlalchemy
+pytest-datadir==1.3.1
+    # via
+    #   -r requirements.in
+    #   pytest-regressions
+pytest-regressions==2.3.1
+    # via -r requirements.in
 pytest-sqlalchemy==0.2.1
     # via -r requirements.in
 pytz==2021.3
     # via
     #   celery
     #   flask-restx
+pyyaml==6.0
+    # via pytest-regressions
+redis==4.1.4
+    # via -r requirements.in
 six==1.16.0
     # via
     #   click-repl
@@ -107,6 +123,8 @@ werkzeug==2.0.3
     # via
     #   flask
     #   flask-restx
+wrapt==1.14.0
+    # via deprecated
 
 # The following packages are considered to be unsafe in a requirements file:
 # setuptools

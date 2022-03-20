@@ -1,5 +1,25 @@
 services:
 
+  api:
+    image: ffio_inventory
+    ports:
+      - 5000:5000
+    env_file:
+      - prod.env
+    environment:
+      FLASK_APP: ffio_inventory.api.__main__:app
+    volumes:
+      - uploads_folder:/mnt/ffio_uploads
+    command: 'flask run --host=0.0.0.0'
+
+  worker:
+    image: ffio_inventory
+    env_file:
+      - prod.env
+    volumes:
+      - uploads_folder:/mnt/ffio_uploads
+    command: 'celery -A ffio_inventory.worker.app worker -l INFO'
+
   db:
     image: postgres:13.6
     ports:
@@ -16,3 +36,4 @@ services:
 
 volumes:
   pgdata:
+  uploads_folder:

@@ -1,13 +1,10 @@
 import logging
-import shutil
-from pathlib import Path
 
 from flask import Flask
 from flask_restx import Api
 
-from ffio_inventory.api import api_config
 from ffio_inventory.api.product_api import ns as product_ns
-from ffio_inventory.core import UPLOAD_FOLDER
+from ffio_inventory.core import UPLOAD_PATH
 from ffio_inventory.repository import db
 
 log = logging.getLogger(__name__)
@@ -15,12 +12,9 @@ log = logging.getLogger(__name__)
 
 def create_app(db_url: str) -> Flask:
     app = Flask(__name__)
-    app.config.from_object(api_config)
 
-    upload_path = UPLOAD_FOLDER
-    if upload_path.is_dir():
-        shutil.rmtree(upload_path)
-    upload_path.mkdir()
+    upload_path = UPLOAD_PATH
+    upload_path.mkdir(exist_ok=True)
 
     api = Api(title='Products Inventory API')
     api.add_namespace(product_ns)

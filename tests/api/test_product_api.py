@@ -4,7 +4,7 @@ from pathlib import Path
 from flask import Flask
 from flask.testing import FlaskClient
 
-from ffio_inventory.core import UPLOAD_FOLDER
+from ffio_inventory.core import UPLOAD_PATH
 
 
 def test_crud(api: FlaskClient) -> None:
@@ -33,4 +33,4 @@ def test_csv_upload(flask_app: Flask, api: FlaskClient, datadir: Path) -> None:
         assert r.status_code == 201
         assert 'task_id' in r.json
 
-    assert os.listdir(UPLOAD_FOLDER) == ['sample.csv']
+    assert os.listdir(UPLOAD_PATH) == ['sample.csv']

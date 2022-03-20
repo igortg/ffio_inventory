@@ -8,6 +8,7 @@ result_backend = broker_url
 
 task_track_started = True
 
+# TODO: Change to json for better security
 SERIALIZATION_PROTOCOL = 'pickle'
 
 accept_content = [SERIALIZATION_PROTOCOL]

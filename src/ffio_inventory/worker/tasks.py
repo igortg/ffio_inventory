@@ -4,7 +4,7 @@ from pathlib import Path
 from celery import Task, states
 from celery.result import AsyncResult
 
-from ffio_inventory.core import UPLOAD_FOLDER
+from ffio_inventory.core import UPLOAD_PATH
 from ffio_inventory.repository import db
 from ffio_inventory.service import commands
 from ffio_inventory.service.uow import UnitOfWork
@@ -14,13 +14,13 @@ log = logging.getLogger(__name__)
 
 
 def start_load_products_from_csv(request_file: Path) -> AsyncResult:
-    uploaded_file = request_file.relative_to(UPLOAD_FOLDER)
+    uploaded_file = request_file.relative_to(UPLOAD_PATH)
     async_result = _load_products_from_csv_task.delay(uploaded_file)
     return async_result
 
 
 def get_load_products_from_csv_task_progress(task_id: str) -> tuple[str, dict]:
-    from celery.states import PENDING, STARTED
+    from celery.states import STARTED
 
     async_result = celery_app.AsyncResult(task_id)
     progress = async_result.result if async_result.state == STARTED else {}
@@ -31,7 +31,7 @@ def get_load_products_from_csv_task_progress(task_id: str) -> tuple[str, dict]:
 def _load_products_from_csv_task(task: Task, file_id: str):
     log.info("Start loading file")
     uow = get_uow()
-    csv_file_path = UPLOAD_FOLDER / file_id
+    csv_file_path = UPLOAD_PATH / file_id
 
     def task_progress_callback(msg, current, total):
         log.info(f"{current//1000}K of {total//1000}K")

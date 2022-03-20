@@ -6,7 +6,7 @@ from flask import request
 from flask_restx import Resource, fields, Namespace
 from werkzeug.datastructures import FileStorage
 
-from ffio_inventory.core import UPLOAD_FOLDER
+from ffio_inventory.core import UPLOAD_PATH
 from ffio_inventory.models.product import Product
 from ffio_inventory.repository import db
 from ffio_inventory.service import views, commands
@@ -78,6 +78,6 @@ class ProductUploadTaskEndpoint(Resource):
 
 
 def _save_to_upload_area(request_file: FileStorage) -> Path:
-    uploaded_file_path = UPLOAD_FOLDER / request_file.filename
+    uploaded_file_path = UPLOAD_PATH / request_file.filename
     request_file.save(uploaded_file_path)
     return uploaded_file_path

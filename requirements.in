@@ -9,4 +9,5 @@ pytest
 pytest-sqlalchemy
 pytest-datadir
 pytest-regressions
+redis
 sqlalchemy
