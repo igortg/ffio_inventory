@@ -1,6 +1,10 @@
+from http import HTTPStatus
+from pathlib import Path
+
 import attrs
-from flask import request, current_app
+from flask import request
 from flask_restx import Resource, fields, Namespace
+from werkzeug.datastructures import FileStorage
 
 from ffio_inventory.core import UPLOAD_FOLDER
 from ffio_inventory.models.product import Product
@@ -24,13 +28,13 @@ product_serializer = ns.model(
 
 @ns.route("")
 class ProductListEndpoint(Resource):
-    @ns.marshal_with(product_serializer, code=201)
+    @ns.marshal_with(product_serializer)
     def post(self):
         uow = UnitOfWork(db.engine)
         data = request.json
         new_product = Product(**data)
         new_product = commands.add_product(uow, new_product)
-        return new_product
+        return new_product, HTTPStatus.CREATED
 
     @ns.marshal_list_with(product_serializer)
     def get(self):
@@ -49,20 +53,31 @@ class ProductEndpoint(Resource):
 
 
 @ns.route("/upload-csv")
-class ProductUpload(Resource):
+class ProductUploadEndpoint(Resource):
     def post(self):
-        # check if the post request has the file part
         if 'file' not in request.files:
-            return "No file sent", 400
-        request_file = request.files['file']
+            return "No file sent", HTTPStatus.BAD_REQUEST
+        request_file: FileStorage = request.files['file']
         # If the user does not select a file, the browser submits an
         # empty file without a filename.
         if request_file.filename == '':
-            return "No selected file", 400
+            return "No selected file", HTTPStatus.BAD_REQUEST
 
-        uploaded_file_path = UPLOAD_FOLDER / request_file.filename
-        request_file.save(uploaded_file_path)
+        csv_file_path = _save_to_upload_area(request_file)
+        async_result = tasks.start_load_products_from_csv(csv_file_path)
 
-        async_result = tasks.load_products_from_csv_task.delay(request_file.filename)
-        async_result.get()
-        return {"task_id": async_result.id}, 201
+        return {"task_id": async_result.id}, HTTPStatus.CREATED
+
+
+@ns.route("/upload-csv/<task_id>")
+class ProductUploadTaskEndpoint(Resource):
+    def get(self, task_id):
+        state, progress = tasks.get_load_products_from_csv_task_progress(task_id)
+        progress["state"] = state
+        return progress
+
+
+def _save_to_upload_area(request_file: FileStorage) -> Path:
+    uploaded_file_path = UPLOAD_FOLDER / request_file.filename
+    request_file.save(uploaded_file_path)
+    return uploaded_file_path

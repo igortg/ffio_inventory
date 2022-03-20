@@ -6,7 +6,7 @@ from flask import Flask
 from flask_restx import Api
 
 from ffio_inventory.api import api_config
-from ffio_inventory.api.product import ns as product_ns
+from ffio_inventory.api.product_api import ns as product_ns
 from ffio_inventory.core import UPLOAD_FOLDER
 from ffio_inventory.repository import db
 

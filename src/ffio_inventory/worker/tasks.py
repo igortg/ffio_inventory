@@ -1,6 +1,8 @@
 import logging
+from pathlib import Path
 
-from celery import Task
+from celery import Task, states
+from celery.result import AsyncResult
 
 from ffio_inventory.core import UPLOAD_FOLDER
 from ffio_inventory.repository import db
@@ -11,12 +13,32 @@ from ffio_inventory.worker.app import celery_app
 log = logging.getLogger(__name__)
 
 
+def start_load_products_from_csv(request_file: Path) -> AsyncResult:
+    uploaded_file = request_file.relative_to(UPLOAD_FOLDER)
+    async_result = _load_products_from_csv_task.delay(uploaded_file)
+    return async_result
+
+
+def get_load_products_from_csv_task_progress(task_id: str) -> tuple[str, dict]:
+    from celery.states import PENDING, STARTED
+
+    async_result = celery_app.AsyncResult(task_id)
+    progress = async_result.result if async_result.state == STARTED else {}
+    return async_result.state, progress
+
+
 @celery_app.task(name='load_products_from_csv', bind=True)
-def load_products_from_csv_task(task: Task, file_id: str):
+def _load_products_from_csv_task(task: Task, file_id: str):
+    log.info("Start loading file")
     uow = get_uow()
     csv_file_path = UPLOAD_FOLDER / file_id
-    log.info("Start loading file")
-    commands.load_products_from_csv(uow, csv_file_path)
+
+    def task_progress_callback(msg, current, total):
+        log.info(f"{current//1000}K of {total//1000}K")
+        _progress_state = {"current": current, "total": total}
+        task.update_state(state=states.STARTED, meta=_progress_state)
+
+    commands.load_products_from_csv(uow, csv_file_path, progress_callback=task_progress_callback)
 
 
 def get_uow() -> UnitOfWork:

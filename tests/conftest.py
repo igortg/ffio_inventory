@@ -43,3 +43,15 @@ def create_tables(engine: Engine):
 @pytest.fixture()
 def uow(engine, create_tables):
     return UnitOfWork(engine)
+
+
+@pytest.fixture(autouse=True, scope='session')
+def celery_config():
+    """
+    Disable broker for tests
+    """
+    from ffio_inventory.worker.app import celery_app
+
+    celery_app.conf.broker_url = None
+    celery_app.conf.result_backend = None
+    celery_app.conf.task_always_eager = True

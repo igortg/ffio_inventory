@@ -25,7 +25,7 @@ def test_crud_product(uow: UnitOfWork) -> None:
 
 
 def test_load_products_form_csv(uow: UnitOfWork, datadir: Path, data_regression) -> None:
-    commands.load_products_from_csv(uow, datadir / 'sample.csv')
+    commands.load_products_from_csv(uow, datadir / 'sample.csv', lambda m, i, t: None)
 
     with uow:
         loaded_products = uow.products.load_all()

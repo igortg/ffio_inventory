@@ -31,6 +31,6 @@ def test_csv_upload(flask_app: Flask, api: FlaskClient, datadir: Path) -> None:
             content_type='multipart/form-data',
         )
         assert r.status_code == 201
-        assert r.json == "11 products added"
+        assert 'task_id' in r.json
 
     assert os.listdir(UPLOAD_FOLDER) == ['sample.csv']
